@@ -188,6 +188,7 @@ void DoublyLinkedList<T>::insert(int index, T input)   {
         return;
     }
     if (!index) {
+        head_->prev = inserted; // Edit: forgot to update old head prev ptr
         inserted->next = head_;
         head_ = inserted;
         return;
@@ -197,8 +198,7 @@ void DoublyLinkedList<T>::insert(int index, T input)   {
     inserted->next = temp;
     inserted->prev = current;
     current->next = inserted;
-    if (current == tail_) { // Peculiarly, current == tail_ works but index == size() doesn't!
-        tail_->prev = tail_; 
+    if (current == tail_) { // Peculiarly, current == tail_ works but index == size() doesn't! -- Reason: size() is evaluated AFTER insertion op.
         tail_ = inserted; // insert at tail
     }
 }
