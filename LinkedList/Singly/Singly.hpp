@@ -167,7 +167,10 @@ void SinglyLinkedList<T>::insert(int index, T input)   {
         throw std::out_of_range("insert index out of range");
     }
     Node* inserted =  new Node(input);
-    if (!head_) head_ = tail_ = inserted;
+    if (!head_) {
+        head_ = tail_ = inserted;
+        return; // Revised: forgot to return
+    }
     Node* current = head_;
     if (!index) {
         inserted->next = head_;
@@ -178,9 +181,8 @@ void SinglyLinkedList<T>::insert(int index, T input)   {
     Node* temp = current->next;
     inserted->next = temp;
     current->next = inserted;
-    if (index == size()) {
-        tail_ = inserted; // insert at tail
-
+    if (inserted->next == nullptr) {
+        tail_ = inserted; // insert at tail case. Revised: No “off-by-one” trap with measuring size() AFTER insertion.
     }
 }
 
