@@ -1,18 +1,20 @@
-# Common data structures
-**Specifics: Implementing common data structures as C++ template classes**
+# Implementing common data structures as C++ template classes
 
 ## Data structures covered:
 - Array
-- Linked List (singly, doubly, circular)
+- Linked list (singly, doubly, circular)
 - Stack
 - Queue
-- Binary Tree (BST, AVL tree, Red-Black Tree)
+- Binary Tree (BST, AVL tree, red-black tree)
 - Heap
-- Hash (Table, Set, Map)
+- PriorityQueue
+- Hash (map, set)
 - Graph
-
-## And also:
-- Smart Pointers (Unique, Shared)
+- Disjoint Set
+- Trie
+- Skip list
+- Bloom filter
+- B-Tree
 
 ## Directions:
 - Makefiles are provided for all the mini projects. Go to any data structures' directory and run make to build that specific project, or make clean to clean the binaries.
