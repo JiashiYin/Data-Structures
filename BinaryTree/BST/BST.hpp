@@ -70,14 +70,27 @@ std::unique_ptr<typename BST<T>::Node> BST<T>::insertHelper(const T& input, std:
 }
 
 
+/*
+This function:
+
+- Given a subtree rooted at root:
+
+    - Finds the leftmost node (min) by going all the way left until bumping into wall
+
+    - Detaches it from the tree
+
+    - Repairs the tree by promoting its right child (if it got a right child it can't be orphaned)
+
+    - Returns ownership of the minimum node
+*/
 template <typename T>
-std::unique_ptr<typename BST<T>::Node> BST<T>::extractMin(std::unique_ptr<Node>& root)   {
-    if (!root) return std::move(root);
-    auto current = &root; // ptr to unique_ptr!
-    while ((*current)->left)    {
-        current = &((*current)->left);
+std::unique_ptr<typename BST<T>::Node> BST<T>::extractMin(std::unique_ptr<Node>& root) {
+    if (!root->left) {
+        auto min = std::move(root);
+        root = std::move(min->right);  // reattach
+        return min;
     }
-    return std::move(*current);
+    return extractMin(root->left);
 }
 
 
@@ -102,10 +115,11 @@ std::unique_ptr<typename BST<T>::Node> BST<T>::removeHelper(const T& input, std:
         }   else    { // Case 3: Two children
             // In this case, either the largest node in left subtree (in-order predeccessor)
             // or the smallest node in right subtree may substitute (in-order successor)
-            auto minNode = extractMin(root);
+            auto minNode = extractMin(root->right);
             minNode->left = std::move(root->left);
-            minNode->right = removeHelper(minNode->data, root->right, success);
-            // In-prder prede/successor falls in previous two cases.
+            minNode->right = std::move(root->right);
+            success = true;
+            // In-order prede/successor falls in previous two cases.
             return minNode; // compiler will elide copy here, explicitly using move could interfere
             // simply return by val for local objs (NOT for passed/captured!), compiler will move it
         }
