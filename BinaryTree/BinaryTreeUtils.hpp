@@ -59,24 +59,47 @@ void BinaryTreeUtils<T>::inorderTraversal(const std::unique_ptr<Node>& root, std
         current = stack.top();
         stack.pop();
         func(current->data);
-        current = current->right.get();
+        current = current->right.get(); // may or may not have a right child
     }
 }
 
+/*
+
+Recursive impl:
+
+template <typename T>
+void BinaryTreeUtils<T>::inorderTraversal(const std::unique_ptr<Node>& root, std::function<void(const T&)> func)    {
+    if (!root) return;
+    inorderTraversal(root->left, func);
+    func(root->data);
+    inorderTraversal(root->right, func);
+}
+
+*/
+
+
+
+// Problematic, previous impl is not post order (L->R->N); correct approach involve a last visited ptr
+// A node is visited iff: !(node->right) || lastVisit == node->right. This ensures R->N postorder.
 template <typename T>
 void BinaryTreeUtils<T>::postorderTraversal(const std::unique_ptr<Node>& root, std::function<void(const T&)> func)   {
     if (!root) return;
     Stack<Node*> stack;
     auto current = root.get();
+    Node* lastVisit = nullptr;
     while (!stack.empty() || current)   {
         while (current)  {
             stack.push(current);
-            current = current->right.get();
+            current = current->left.get();
         }
         current = stack.top();
-        stack.pop();
-        func(current->data);
-        current = current->left.get();
+        if (current->right && lastVisit != current->right.get())    { // cannot visit current node yet, gotta visit R first!
+            current = current->right.get();
+        }   else    { // we can visit current node
+            stack.pop();
+            func(current->data);
+            lastVisit = current;
+        }
     }
 }
 
